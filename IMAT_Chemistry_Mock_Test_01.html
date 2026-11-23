@@ -1,0 +1,1775 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IMAT Chemistry Mock Test 01 — Interactive CBT Portal</title>
+<style>
+  :root {
+    --primary: #1e3a5f;
+    --primary-dark: #132742;
+    --accent: #0f766e;
+    --accent-light: #ccfbf1;
+    --ok: #059669;
+    --ok-bg: #ecfdf5;
+    --err: #dc2626;
+    --err-bg: #fef2f2;
+    --warn: #d97706;
+    --warn-bg: #fffbeb;
+    --gold: #b45309;
+    --gold-bg: #fef3c7;
+    --bg: #f1f5f9;
+    --card: #ffffff;
+    --border: #cbd5e1;
+    --text: #0f172a;
+    --muted: #475569;
+  }
+  *, *::before, *::after { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+  }
+  .hidden { display: none !important; }
+
+  /* Top Navigation Bar */
+  .topbar {
+    position: sticky;
+    top: 0;
+    z-index: 40;
+    background: var(--primary);
+    color: #fff;
+    padding: 12px 20px;
+    box-shadow: 0 2px 8px rgba(15,23,42,0.14);
+  }
+  .topbar-inner {
+    max-width: 1120px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .brand {
+    font-weight: 800;
+    font-size: 1.05rem;
+    letter-spacing: -0.01em;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .brand-pill {
+    background: rgba(255,255,255,0.16);
+    padding: 3px 10px;
+    border-radius: 999px;
+    font-size: 0.78rem;
+    font-weight: 700;
+  }
+  .top-right-wrap {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  .exam-status {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  .student-chip {
+    font-size: 0.85rem;
+    background: rgba(255,255,255,0.13);
+    padding: 5px 12px;
+    border-radius: 8px;
+  }
+  .timer-box {
+    font-variant-numeric: tabular-nums;
+    font-weight: 800;
+    font-size: 1rem;
+    background: #0f766e;
+    padding: 6px 14px;
+    border-radius: 8px;
+    min-width: 96px;
+    text-align: center;
+  }
+  .timer-box.warn { background: #d97706; }
+  .timer-box.danger { background: #dc2626; animation: pulse 1s infinite; }
+  @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.72; } }
+
+  /* Container */
+  .container {
+    max-width: 1120px;
+    margin: 24px auto;
+    padding: 0 16px 40px;
+  }
+
+  /* Buttons */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    border: none;
+    border-radius: 9px;
+    padding: 9px 16px;
+    font-size: 0.9rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.15s ease;
+  }
+  .btn:disabled { opacity: 0.45; cursor: not-allowed; }
+  .btn-primary { background: var(--primary); color: #fff; }
+  .btn-primary:hover:not(:disabled) { background: var(--primary-dark); }
+  .btn-accent { background: var(--accent); color: #fff; }
+  .btn-accent:hover:not(:disabled) { background: #0d625b; }
+  .btn-danger { background: var(--err); color: #fff; }
+  .btn-danger:hover:not(:disabled) { background: #b91c1c; }
+  .btn-ghost {
+    background: rgba(255,255,255,0.14);
+    color: #fff;
+    border: 1px solid rgba(255,255,255,0.28);
+  }
+  .btn-ghost:hover:not(:disabled) { background: rgba(255,255,255,0.24); }
+  .btn-outline {
+    background: #fff;
+    color: var(--text);
+    border: 1.5px solid var(--border);
+  }
+  .btn-outline:hover:not(:disabled) { background: #f8fafc; border-color: #94a3b8; }
+  .btn-warn { background: var(--warn-bg); color: #92400e; border: 1.5px solid #fcd34d; }
+  .btn-warn.active { background: var(--warn); color: #fff; border-color: var(--warn); }
+
+  /* Toast */
+  .toast {
+    position: fixed;
+    bottom: 22px;
+    right: 22px;
+    z-index: 120;
+    background: var(--primary-dark);
+    color: #fff;
+    padding: 11px 18px;
+    border-radius: 10px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    box-shadow: 0 10px 26px rgba(15,23,42,0.28);
+  }
+
+  /* Start Screen */
+  .start-card {
+    max-width: 680px;
+    margin: 24px auto;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-top: 5px solid var(--primary);
+    border-radius: 14px;
+    padding: 28px 28px 24px;
+    box-shadow: 0 6px 24px rgba(15,23,42,0.07);
+  }
+  .start-title {
+    margin: 0 0 6px;
+    font-size: 1.65rem;
+    color: var(--primary);
+    line-height: 1.25;
+  }
+  .start-sub {
+    margin: 0 0 20px;
+    color: var(--accent);
+    font-weight: 600;
+    font-size: 0.98rem;
+  }
+  .meta-strip {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+  .meta-pill {
+    background: #f8fafc;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 10px 8px;
+    text-align: center;
+  }
+  .meta-pill strong { display: block; font-size: 1.05rem; color: var(--primary); }
+  .meta-pill span { font-size: 0.78rem; color: var(--muted); }
+  .rules-list {
+    background: #f8fafc;
+    border-left: 4px solid var(--accent);
+    border-radius: 8px;
+    padding: 12px 16px 12px 30px;
+    margin: 0 0 22px;
+    font-size: 0.9rem;
+    color: #334155;
+  }
+  .rules-list li { margin-bottom: 5px; }
+  .form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+    margin-bottom: 14px;
+  }
+  .field label {
+    display: block;
+    font-weight: 700;
+    font-size: 0.86rem;
+    margin-bottom: 5px;
+    color: var(--primary);
+  }
+  .field input, textarea {
+    width: 100%;
+    padding: 11px 13px;
+    border: 1.5px solid var(--border);
+    border-radius: 9px;
+    font-size: 0.95rem;
+    font-family: inherit;
+    outline: none;
+    transition: border-color 0.15s;
+  }
+  .field input:focus, textarea:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(15,118,110,0.12); }
+  .form-error {
+    color: var(--err);
+    background: var(--err-bg);
+    border: 1px solid #fecaca;
+    border-radius: 8px;
+    padding: 8px 12px;
+    font-size: 0.88rem;
+    font-weight: 600;
+    margin-bottom: 14px;
+  }
+
+  /* Exam Workspace */
+  .exam-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 290px;
+    gap: 20px;
+    align-items: start;
+  }
+  .q-panel, .palette-panel {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 22px;
+    box-shadow: 0 4px 16px rgba(15,23,42,0.05);
+  }
+  .q-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 12px;
+    margin-bottom: 16px;
+    border-bottom: 1.5px solid #e2e8f0;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  .q-badge {
+    background: var(--primary);
+    color: #fff;
+    font-weight: 800;
+    padding: 5px 12px;
+    border-radius: 8px;
+    font-size: 0.92rem;
+  }
+  .q-marks {
+    font-size: 0.84rem;
+    color: var(--muted);
+    font-weight: 600;
+  }
+  .q-stem {
+    font-size: 1.03rem;
+    line-height: 1.62;
+    margin-bottom: 18px;
+    color: var(--text);
+  }
+  .q-stem table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 12px 0;
+    font-size: 0.92rem;
+  }
+  .q-stem th, .q-stem td {
+    border: 1px solid var(--border);
+    padding: 7px 10px;
+    text-align: left;
+  }
+  .q-stem th { background: #e2e8f0; color: var(--primary); font-weight: 700; }
+  .q-stem ol, .q-stem ul { margin: 8px 0; padding-left: 22px; }
+
+  .options-wrap {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 22px;
+  }
+  .opt-btn {
+    width: 100%;
+    text-align: left;
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    background: #fff;
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    padding: 12px 14px;
+    font-size: 0.97rem;
+    line-height: 1.48;
+    color: var(--text);
+    cursor: pointer;
+    transition: all 0.14s ease;
+  }
+  .opt-btn:hover { border-color: var(--accent); background: #f8fafc; }
+  .opt-btn.selected {
+    border-color: var(--accent);
+    background: #f0fdfa;
+    box-shadow: 0 0 0 2px rgba(15,118,110,0.16);
+  }
+  .opt-circle {
+    flex-shrink: 0;
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    border: 1.5px solid var(--primary);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    font-size: 0.86rem;
+    color: var(--primary);
+  }
+  .opt-btn.selected .opt-circle {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #fff;
+  }
+
+  .q-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    padding-top: 14px;
+    border-top: 1.5px solid #e2e8f0;
+  }
+  .q-actions-group { display: flex; gap: 8px; flex-wrap: wrap; }
+
+  /* Palette */
+  .palette-title {
+    margin: 0 0 12px;
+    font-size: 0.96rem;
+    color: var(--primary);
+    font-weight: 800;
+  }
+  .palette-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+  .pal-btn {
+    height: 38px;
+    border-radius: 8px;
+    border: 1.5px solid var(--border);
+    background: #f8fafc;
+    font-weight: 700;
+    font-size: 0.9rem;
+    color: var(--text);
+    cursor: pointer;
+  }
+  .pal-btn.answered { background: var(--ok); border-color: var(--ok); color: #fff; }
+  .pal-btn.review { background: var(--warn); border-color: var(--warn); color: #fff; }
+  .pal-btn.current { box-shadow: 0 0 0 3px rgba(30,58,95,0.35); border-color: var(--primary); }
+  .legend {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 7px;
+    font-size: 0.8rem;
+    color: var(--muted);
+    margin-bottom: 16px;
+  }
+  .legend-item { display: flex; align-items: center; gap: 6px; }
+  .dot { width: 12px; height: 12px; border-radius: 3px; display: inline-block; }
+  .dot-ans { background: var(--ok); }
+  .dot-rev { background: var(--warn); }
+  .dot-un { background: #e2e8f0; border: 1px solid #94a3b8; }
+  .dot-cur { background: var(--primary); }
+
+  /* Modal */
+  .modal-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(15,23,42,0.55);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+    z-index: 80;
+  }
+  .modal-box {
+    background: #fff;
+    border-radius: 14px;
+    max-width: 440px;
+    width: 100%;
+    padding: 24px;
+    box-shadow: 0 18px 40px rgba(15,23,42,0.28);
+  }
+  .modal-box h3 { margin: 0 0 8px; color: var(--primary); }
+  .modal-stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    margin: 14px 0 18px;
+    text-align: center;
+  }
+  .modal-stat {
+    background: #f8fafc;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 10px 6px;
+  }
+  .modal-stat strong { display: block; font-size: 1.2rem; }
+  .modal-stat span { font-size: 0.78rem; color: var(--muted); }
+  .modal-actions { display: flex; justify-content: flex-end; gap: 10px; }
+
+  /* Results & Leaderboard */
+  .result-hero {
+    background: linear-gradient(135deg, var(--primary) 0%, #0f4c5c 100%);
+    color: #fff;
+    border-radius: 16px;
+    padding: 24px 26px;
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+  .result-hero h2 { margin: 0 0 6px; font-size: 1.5rem; }
+  .result-student { font-size: 0.94rem; opacity: 0.92; }
+  .score-bubble {
+    background: rgba(255,255,255,0.14);
+    border: 1.5px solid rgba(255,255,255,0.28);
+    border-radius: 14px;
+    padding: 14px 22px;
+    text-align: center;
+    min-width: 170px;
+  }
+  .score-big { font-size: 2rem; font-weight: 900; line-height: 1.1; }
+  .score-sub { font-size: 0.84rem; opacity: 0.9; margin-top: 3px; }
+  .tier-badge {
+    display: inline-block;
+    margin-top: 6px;
+    background: #fff;
+    color: var(--primary);
+    font-weight: 800;
+    font-size: 0.78rem;
+    padding: 3px 10px;
+    border-radius: 999px;
+  }
+
+  .kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+  .kpi-card {
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 14px 16px;
+    text-align: center;
+  }
+  .kpi-val { font-size: 1.45rem; font-weight: 800; }
+  .kpi-lbl { font-size: 0.82rem; color: var(--muted); margin-top: 2px; }
+  .kpi-ok { color: var(--ok); }
+  .kpi-err { color: var(--err); }
+  .kpi-muted { color: var(--muted); }
+  .kpi-pri { color: var(--primary); }
+
+  .card-box {
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 20px;
+    margin-bottom: 20px;
+  }
+  .card-box h3 { margin: 0 0 10px; color: var(--primary); font-size: 1.12rem; }
+  .share-banner {
+    background: #f0fdfa;
+    border: 1.5px solid #99f6e4;
+    border-radius: 12px;
+    padding: 14px 18px;
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .code-preview {
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 0.82rem;
+    background: #fff;
+    border: 1px solid var(--border);
+    padding: 6px 10px;
+    border-radius: 7px;
+    color: var(--primary);
+    word-break: break-all;
+  }
+  .sync-pill {
+    display: inline-block;
+    font-size: 0.78rem;
+    font-weight: 700;
+    padding: 3px 9px;
+    border-radius: 999px;
+    background: #e0f2fe;
+    color: #0369a1;
+  }
+  .sync-pill.ok { background: var(--ok-bg); color: var(--ok); }
+
+  .ch-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9rem;
+  }
+  .ch-table th, .ch-table td {
+    padding: 8px 10px;
+    border-bottom: 1px solid #e2e8f0;
+    text-align: left;
+  }
+  .ch-table th { background: #f8fafc; color: var(--primary); font-weight: 700; }
+  .ch-table td.num, .ch-table th.num { text-align: right; font-variant-numeric: tabular-nums; }
+  .rank-row-me { background: #f0fdfa !important; font-weight: 700; }
+  .rank-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 28px;
+    height: 24px;
+    border-radius: 999px;
+    font-size: 0.8rem;
+    font-weight: 800;
+    background: #e2e8f0;
+    color: var(--primary);
+  }
+  .rank-1 { background: #fef08a; color: #854d0e; }
+  .rank-2 { background: #e2e8f0; color: #334155; }
+  .rank-3 { background: #fed7aa; color: #9a3412; }
+
+  .code-block {
+    background: #0f172a;
+    color: #e2e8f0;
+    padding: 14px;
+    border-radius: 10px;
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 0.8rem;
+    overflow-x: auto;
+    white-space: pre;
+    line-height: 1.45;
+  }
+
+  .filter-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-bottom: 16px;
+  }
+  .filter-tabs { display: flex; gap: 8px; flex-wrap: wrap; }
+  .tab-btn {
+    border: 1.5px solid var(--border);
+    background: #fff;
+    border-radius: 999px;
+    padding: 6px 14px;
+    font-size: 0.86rem;
+    font-weight: 700;
+    color: var(--muted);
+    cursor: pointer;
+  }
+  .tab-btn.active { background: var(--primary); border-color: var(--primary); color: #fff; }
+
+  .rev-card {
+    background: #fff;
+    border: 1px solid var(--border);
+    border-left: 5px solid var(--border);
+    border-radius: 12px;
+    padding: 16px 18px;
+    margin-bottom: 14px;
+  }
+  .rev-card.status-correct { border-left-color: var(--ok); }
+  .rev-card.status-wrong { border-left-color: var(--err); }
+  .rev-card.status-skipped { border-left-color: #94a3b8; }
+  .rev-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 10px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid #e2e8f0;
+  }
+  .status-pill {
+    font-size: 0.8rem;
+    font-weight: 800;
+    padding: 3px 10px;
+    border-radius: 999px;
+  }
+  .pill-ok { background: var(--ok-bg); color: var(--ok); }
+  .pill-err { background: var(--err-bg); color: var(--err); }
+  .pill-skip { background: #f1f5f9; color: var(--muted); }
+  .rev-meta { font-size: 0.82rem; color: var(--muted); font-weight: 600; }
+  .rev-opts { list-style: none; padding: 0; margin: 10px 0 12px; display: flex; flex-direction: column; gap: 6px; }
+  .rev-opt {
+    display: flex;
+    align-items: flex-start;
+    gap: 9px;
+    padding: 7px 10px;
+    border-radius: 8px;
+    border: 1px solid #e2e8f0;
+    font-size: 0.92rem;
+  }
+  .rev-opt.is-correct { background: var(--ok-bg); border-color: #6ee7b7; color: #065f46; font-weight: 600; }
+  .rev-opt.is-wrong { background: var(--err-bg); border-color: #fca5a5; color: #991b1b; font-weight: 600; }
+  .rev-tag {
+    margin-left: auto;
+    font-size: 0.75rem;
+    font-weight: 800;
+    white-space: nowrap;
+    padding: 2px 7px;
+    border-radius: 6px;
+  }
+  .sol-box {
+    background: #f8fafc;
+    border-left: 3.5px solid var(--accent);
+    border-radius: 6px;
+    padding: 10px 12px;
+    font-size: 0.93rem;
+    margin-bottom: 8px;
+  }
+  .trap-box {
+    background: var(--warn-bg);
+    border-left: 3.5px solid var(--warn);
+    border-radius: 6px;
+    padding: 8px 12px;
+    font-size: 0.88rem;
+    color: #92400e;
+  }
+
+  @media (max-width: 820px) {
+    .exam-grid { grid-template-columns: 1fr; }
+    .meta-strip, .kpi-grid { grid-template-columns: repeat(2, 1fr); }
+    .form-grid { grid-template-columns: 1fr; }
+  }
+  @media print {
+    .topbar, .filter-bar, .no-print, .share-banner { display: none !important; }
+    body { background: #fff; }
+    .rev-card { break-inside: avoid; }
+  }
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="topbar-inner">
+    <div class="brand">
+      <span>IMAT Chemistry Mock Test 01</span>
+      <span class="brand-pill">Real IMAT Pattern</span>
+    </div>
+    <div class="top-right-wrap">
+      <button id="openLeaderboardBtn" type="button" class="btn btn-ghost">Top-10 &amp; Tracker</button>
+      <div id="examHeaderRight" class="exam-status hidden">
+        <span id="studentDisplay" class="student-chip"></span>
+        <span id="timerDisplay" class="timer-box">25:00</span>
+        <button id="topSubmitBtn" type="button" class="btn btn-danger">Submit Test</button>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main class="container">
+
+  <!-- 1. START / REGISTRATION SCREEN -->
+  <section id="startScreen" class="start-card">
+    <h1 class="start-title">IMAT Chemistry Full-Length Mock Test 01</h1>
+    <p class="start-sub">Official MUR IMAT Pattern &middot; 15 Questions &middot; 5 Options (A&ndash;E)</p>
+
+    <div class="meta-strip">
+      <div class="meta-pill"><strong>15 Qs</strong><span>Chemistry Section</span></div>
+      <div class="meta-pill"><strong>25 Min</strong><span>Strict Timer</span></div>
+      <div class="meta-pill"><strong>+1.5 / &minus;0.4</strong><span>0 for Blank</span></div>
+      <div class="meta-pill"><strong>22.5</strong><span>Max Marks</span></div>
+    </div>
+
+    <ul class="rules-list">
+      <li>Enter your <strong>Full Name</strong> and <strong>Roll Number</strong> below to begin.</li>
+      <li>Correct answer awards <strong>+1.5 marks</strong>, wrong answer deducts <strong>&minus;0.4 marks</strong>, and unanswered questions score <strong>0</strong>.</li>
+      <li>Answers, marks, right/wrong breakdown, Top-10 rank, and step-by-step solutions unlock <strong>only after you submit</strong>.</li>
+      <li>Do not use a calculator &mdash; all atomic masses and constants are provided inside the questions.</li>
+    </ul>
+
+    <form id="startForm" novalidate>
+      <div class="form-grid">
+        <div class="field">
+          <label for="studentName">Student Full Name *</label>
+          <input id="studentName" type="text" placeholder="e.g., Aarav Sharma" autocomplete="name" required>
+        </div>
+        <div class="field">
+          <label for="studentRoll">Roll Number *</label>
+          <input id="studentRoll" type="text" placeholder="e.g., IMAT-2026-042" required>
+        </div>
+      </div>
+      <div id="formError" class="form-error hidden">Please enter both your Full Name and Roll Number to start the test.</div>
+      <button type="submit" class="btn btn-accent" style="width:100%; padding:13px; font-size:1rem;">Start Mock Test 01</button>
+    </form>
+  </section>
+
+  <!-- 2. LIVE EXAM SCREEN -->
+  <section id="examScreen" class="exam-grid hidden">
+    <div class="q-panel">
+      <div class="q-header">
+        <span id="qCounter" class="q-badge">Question 1 of 15</span>
+        <span class="q-marks">+1.5 Correct &middot; &minus;0.4 Wrong &middot; 0 Blank</span>
+      </div>
+      <div id="qStem" class="q-stem"></div>
+      <div id="qOptions" class="options-wrap"></div>
+      <div class="q-actions">
+        <div class="q-actions-group">
+          <button id="clearBtn" type="button" class="btn btn-outline">Clear Response</button>
+          <button id="reviewBtn" type="button" class="btn btn-warn">Mark for Review</button>
+        </div>
+        <div class="q-actions-group">
+          <button id="prevBtn" type="button" class="btn btn-outline">&larr; Previous</button>
+          <button id="nextBtn" type="button" class="btn btn-primary">Save &amp; Next &rarr;</button>
+        </div>
+      </div>
+    </div>
+
+    <aside class="palette-panel">
+      <h3 class="palette-title">Question Palette</h3>
+      <div id="paletteGrid" class="palette-grid"></div>
+      <div class="legend">
+        <div class="legend-item"><span class="dot dot-ans"></span> Answered (<span id="cntAns">0</span>)</div>
+        <div class="legend-item"><span class="dot dot-rev"></span> Review (<span id="cntRev">0</span>)</div>
+        <div class="legend-item"><span class="dot dot-un"></span> Unanswered (<span id="cntUn">15</span>)</div>
+        <div class="legend-item"><span class="dot dot-cur"></span> Current</div>
+      </div>
+      <button id="sideSubmitBtn" type="button" class="btn btn-danger" style="width:100%;">Finish &amp; Submit Test</button>
+    </aside>
+  </section>
+
+  <!-- 3. RESULTS & SOLUTIONS SCREEN -->
+  <section id="resultScreen" class="hidden">
+    <div class="result-hero">
+      <div>
+        <h2>Mock Test 01 &mdash; Official Result Scorecard</h2>
+        <div id="resStudentMeta" class="result-student"></div>
+      </div>
+      <div class="score-bubble">
+        <div id="resNetScore" class="score-big">0.0 / 22.5</div>
+        <div id="resScoreSub" class="score-sub">Net IMAT Chemistry Score</div>
+        <span id="resTier" class="tier-badge">Evaluated</span>
+      </div>
+    </div>
+
+    <div class="share-banner no-print">
+      <div style="flex:1; min-width:240px;">
+        <div style="display:flex; align-items:center; gap:8px; margin-bottom:5px; flex-wrap:wrap;">
+          <strong style="color:var(--primary);">Send Result to Teacher (for Top-10 Ranking)</strong>
+          <span id="cloudSyncBadge" class="sync-pill">Saved Locally</span>
+        </div>
+        <div id="resultCodePreview" class="code-preview"></div>
+      </div>
+      <button id="copyResultBtn" type="button" class="btn btn-accent">Copy Result for Teacher</button>
+    </div>
+
+    <div class="kpi-grid">
+      <div class="kpi-card"><div id="kpiCorrect" class="kpi-val kpi-ok">0</div><div class="kpi-lbl">Correct (+1.5 each)</div></div>
+      <div class="kpi-card"><div id="kpiWrong" class="kpi-val kpi-err">0</div><div class="kpi-lbl">Wrong (&minus;0.4 each)</div></div>
+      <div class="kpi-card"><div id="kpiSkipped" class="kpi-val kpi-muted">0</div><div class="kpi-lbl">Skipped (0 marks)</div></div>
+      <div class="kpi-card"><div id="kpiAccuracy" class="kpi-val kpi-pri">0%</div><div class="kpi-lbl">Attempt Accuracy</div></div>
+    </div>
+
+    <!-- TOP-10 LEADERBOARD ON RESULT SCREEN -->
+    <div class="card-box">
+      <div style="display:flex; justify-content:space-between; align-items:center; gap:8px; flex-wrap:wrap; margin-bottom:10px;">
+        <h3 style="margin:0;">Top-10 Leaderboard &mdash; Mock Test 01</h3>
+        <span id="lbResultMeta" style="font-size:0.84rem; color:var(--muted); font-weight:600;"></span>
+      </div>
+      <div style="overflow-x:auto;">
+        <table class="ch-table">
+          <thead>
+            <tr>
+              <th style="width:64px;">Rank</th>
+              <th>Student Name</th>
+              <th>Roll No.</th>
+              <th class="num">Score / 22.5</th>
+              <th class="num">Accuracy</th>
+              <th class="num">Time</th>
+            </tr>
+          </thead>
+          <tbody id="resultLeaderboardBody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="card-box">
+      <h3>Chapter-Wise Performance Breakdown</h3>
+      <table class="ch-table">
+        <thead>
+          <tr>
+            <th>Chapter</th>
+            <th class="num">Total Qs</th>
+            <th class="num">Correct</th>
+            <th class="num">Wrong</th>
+            <th class="num">Skipped</th>
+          </tr>
+        </thead>
+        <tbody id="chapterBreakdownBody"></tbody>
+      </table>
+    </div>
+
+    <div class="filter-bar">
+      <div class="filter-tabs" id="filterTabs">
+        <button type="button" class="tab-btn active" data-filter="all">All Questions (15)</button>
+        <button type="button" class="tab-btn" data-filter="wrong">Wrong Only</button>
+        <button type="button" class="tab-btn" data-filter="correct">Correct Only</button>
+        <button type="button" class="tab-btn" data-filter="skipped">Skipped Only</button>
+      </div>
+      <div class="no-print" style="display:flex; gap:8px; flex-wrap:wrap;">
+        <button id="printBtn" type="button" class="btn btn-outline">Print / Save Result PDF</button>
+        <button id="retakeBtn" type="button" class="btn btn-primary">Retake Mock Test</button>
+      </div>
+    </div>
+
+    <div id="reviewContainer"></div>
+  </section>
+
+  <!-- 4. TEACHER ATTEMPT TRACKER & TOP-10 LEADERBOARD PANEL -->
+  <section id="trackerScreen" class="hidden">
+    <div style="display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap; margin-bottom:16px;">
+      <div>
+        <h2 style="margin:0; color:var(--primary);">Teacher Attempt Tracker &amp; Top-10 Leaderboard (Set 01)</h2>
+        <p style="margin:3px 0 0; font-size:0.9rem; color:var(--muted);">Track every student who attempted Mock Test 01, compile WhatsApp result codes, or connect Google Sheets for automatic live sync.</p>
+      </div>
+      <div style="display:flex; gap:8px; flex-wrap:wrap;">
+        <button id="exportCsvBtn" type="button" class="btn btn-accent">Export Attempts CSV</button>
+        <button id="backFromTrackerBtn" type="button" class="btn btn-outline">&larr; Back to Test</button>
+      </div>
+    </div>
+
+    <div class="kpi-grid">
+      <div class="kpi-card"><div id="trkTotal" class="kpi-val kpi-pri">0</div><div class="kpi-lbl">Total Attempts</div></div>
+      <div class="kpi-card"><div id="trkHighest" class="kpi-val kpi-ok">0.0</div><div class="kpi-lbl">Highest Score / 22.5</div></div>
+      <div class="kpi-card"><div id="trkAvg" class="kpi-val kpi-pri">0.0</div><div class="kpi-lbl">Average Score</div></div>
+      <div class="kpi-card"><div id="trkTopCount" class="kpi-val kpi-ok">0</div><div class="kpi-lbl">Competitive (&ge; 13.5)</div></div>
+    </div>
+
+    <!-- TOP 10 TABLE -->
+    <div class="card-box">
+      <h3>Top-10 Rank List (Ranked by Score &rarr; Accuracy &rarr; Fastest Time)</h3>
+      <div style="overflow-x:auto;">
+        <table class="ch-table">
+          <thead>
+            <tr>
+              <th style="width:68px;">Rank</th>
+              <th>Student Name</th>
+              <th>Roll No.</th>
+              <th class="num">Score / 22.5</th>
+              <th class="num">C / W / S</th>
+              <th class="num">Accuracy</th>
+              <th class="num">Time</th>
+            </tr>
+          </thead>
+          <tbody id="trackerTop10Body"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- BULK IMPORT FROM WHATSAPP / TELEGRAM -->
+    <div class="card-box">
+      <h3>Import Student Result Codes (From WhatsApp / Telegram)</h3>
+      <p style="margin:0 0 10px; font-size:0.88rem; color:var(--muted);">Ask students to click <strong>Copy Result for Teacher</strong> after submitting and send it in your group. Paste any number of messages or <code>IMATRES|...</code> lines below (duplicates by Roll No. automatically keep the latest score).</p>
+      <textarea id="bulkImportInput" rows="4" placeholder="Paste student result messages or IMATRES|01|Aarav Sharma|IMAT-042|18.6|13|2|0|87|18:42 lines here..."></textarea>
+      <div style="display:flex; gap:10px; flex-wrap:wrap; margin-top:10px; align-items:center;">
+        <button id="importCodesBtn" type="button" class="btn btn-primary">Import &amp; Update Top-10</button>
+        <label class="btn btn-outline" style="cursor:pointer;">
+          Upload CSV File
+          <input id="csvFileInput" type="file" accept=".csv,text/csv" class="hidden">
+        </label>
+        <button id="clearAttemptsBtn" type="button" class="btn btn-outline" style="color:var(--err); border-color:#fca5a5;">Reset Local Attempts</button>
+      </div>
+    </div>
+
+    <!-- ALL ATTEMPTS LOG -->
+    <div class="card-box">
+      <h3>Complete Attempt Log (Who Attempted)</h3>
+      <div style="overflow-x:auto;">
+        <table class="ch-table">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Student Name</th>
+              <th>Roll No.</th>
+              <th class="num">Score</th>
+              <th class="num">Accuracy</th>
+              <th class="num">Time</th>
+              <th>Submitted At</th>
+            </tr>
+          </thead>
+          <tbody id="trackerAllBody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- OPTIONAL GOOGLE SHEETS LIVE CLOUD SYNC SETUP -->
+    <div class="card-box">
+      <h3>Optional: 100% Automatic Live Leaderboard via Free Google Sheets</h3>
+      <p style="margin:0 0 10px; font-size:0.88rem; color:var(--muted);">Want every student's submission across all phones to save automatically to one Google Sheet and update the Live Top-10 without pasting codes? Create a Google Sheet &rarr; <strong>Extensions &rarr; Apps Script</strong> &rarr; paste the code below &rarr; Deploy as <strong>Web App (Anyone)</strong> &rarr; paste the Web App URL into <code>GOOGLE_SHEET_WEBHOOK_URL</code> in this HTML file (or test it live below).</p>
+      <div style="display:flex; gap:8px; flex-wrap:wrap; margin-bottom:12px;">
+        <input id="webhookInput" type="url" placeholder="https://script.google.com/macros/s/.../exec" style="flex:1; min-width:240px; padding:9px 12px; border:1.5px solid var(--border); border-radius:9px;">
+        <button id="saveWebhookBtn" type="button" class="btn btn-accent">Save &amp; Sync Cloud URL</button>
+        <button id="copyScriptBtn" type="button" class="btn btn-outline">Copy Apps Script Code</button>
+      </div>
+      <div id="appsScriptCode" class="code-block">function doPost(e) {
+  var sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
+  var d = JSON.parse(e.postData.contents);
+  if (sheet.getLastRow() === 0) {
+    sheet.appendRow(["Timestamp","Set","Name","Roll","Score","Correct","Wrong","Skipped","Accuracy","Time"]);
+  }
+  sheet.appendRow([d.timestamp, d.set, d.name, d.roll, d.score, d.correct, d.wrong, d.skipped, d.accuracy, d.time]);
+  return ContentService.createTextOutput(JSON.stringify({status:"ok"})).setMimeType(ContentService.MimeType.JSON);
+}
+function doGet(e) {
+  var sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
+  var rows = sheet.getDataRange().getValues();
+  var setFilter = e.parameter.set || "";
+  var out = [];
+  for (var i = 1; i &lt; rows.length; i++) {
+    if (!setFilter || String(rows[i][1]) === String(setFilter)) {
+      out.push({timestamp:rows[i][0],set:String(rows[i][1]),name:rows[i][2],roll:String(rows[i][3]),score:Number(rows[i][4]),correct:Number(rows[i][5]),wrong:Number(rows[i][6]),skipped:Number(rows[i][7]),accuracy:Number(rows[i][8]),time:String(rows[i][9])});
+    }
+  }
+  return ContentService.createTextOutput(JSON.stringify(out)).setMimeType(ContentService.MimeType.JSON);
+}</div>
+    </div>
+  </section>
+
+</main>
+
+<!-- CONFIRM SUBMIT MODAL -->
+<div id="submitModal" class="modal-backdrop hidden" role="dialog" aria-modal="true">
+  <div class="modal-box">
+    <h3>Submit Mock Test 01?</h3>
+    <p style="margin:0; font-size:0.92rem; color:var(--muted);">Once submitted, your score, Top-10 rank, right/wrong summary, and full step-by-step solutions will unlock immediately.</p>
+    <div class="modal-stats">
+      <div class="modal-stat"><strong id="modAns" style="color:var(--ok);">0</strong><span>Answered</span></div>
+      <div class="modal-stat"><strong id="modRev" style="color:var(--warn);">0</strong><span>Marked</span></div>
+      <div class="modal-stat"><strong id="modUn" style="color:var(--muted);">15</strong><span>Unanswered</span></div>
+    </div>
+    <div class="modal-actions">
+      <button id="cancelSubmitBtn" type="button" class="btn btn-outline">Continue Test</button>
+      <button id="confirmSubmitBtn" type="button" class="btn btn-danger">Yes, Submit Now</button>
+    </div>
+  </div>
+</div>
+
+<!-- CLEAR CONFIRM MODAL -->
+<div id="clearModal" class="modal-backdrop hidden" role="dialog" aria-modal="true">
+  <div class="modal-box">
+    <h3>Reset Local Attempt Records?</h3>
+    <p style="margin:0 0 18px; font-size:0.92rem; color:var(--muted);">This clears saved attempts on this browser for Mock Test 01. Export CSV first if you want a backup.</p>
+    <div class="modal-actions">
+      <button id="cancelClearBtn" type="button" class="btn btn-outline">Cancel</button>
+      <button id="confirmClearBtn" type="button" class="btn btn-danger">Yes, Reset</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast" class="toast hidden"></div>
+
+<script>
+const TEST_DATA = {"set_number": 1, "title": "Mock Test 01", "subtitle": "Full-Length IMAT Chemistry Simulation", "questions": [{"q_num": 1, "chapter_num": 1, "chapter_name": "Constitution of Matter & Ideal Gas Laws", "subtopic": "Dalton's Law of Partial Pressures", "difficulty": "Moderate", "stem_html": "A rigid, sealed flask at constant temperature contains a mixture of 8.0 g of helium (He), 28.0 g of nitrogen (N<sub>2<\/sub>), and 32.0 g of oxygen (O<sub>2<\/sub>). Assuming ideal gas behaviour, if the total pressure inside the flask is 6.0 atm, what is the partial pressure of nitrogen gas?<br><em>[A<sub>r<\/sub>: He = 4, N = 14, O = 16]<\/em>", "options": {"A": "1.0 atm", "B": "2.0 atm", "C": "1.5 atm", "D": "2.5 atm", "E": "3.0 atm"}, "correct": "C", "solution_html": "Convert each mass to moles using the molecular molar masses (N<sub>2<\/sub> = 28 g mol<sup>&minus;1<\/sup> and O<sub>2<\/sub> = 32 g mol<sup>&minus;1<\/sup>): <em>n<\/em>(He) = 8.0 / 4 = 2.0 mol, <em>n<\/em>(N<sub>2<\/sub>) = 28.0 / 28 = 1.0 mol, and <em>n<\/em>(O<sub>2<\/sub>) = 32.0 / 32 = 1.0 mol, giving <em>n<\/em><sub>total<\/sub> = 4.0 mol. By Dalton's law, <em>P<\/em>(N<sub>2<\/sub>) = &chi;(N<sub>2<\/sub>) &times; <em>P<\/em><sub>total<\/sub> = (1.0 / 4.0) &times; 6.0 atm = 1.5 atm. Option B (2.0 atm) comes from forgetting that N<sub>2<\/sub> and O<sub>2<\/sub> are diatomic, while option E (3.0 atm) is the partial pressure of helium.", "imat_trap": "Forgetting that nitrogen and oxygen exist as diatomic molecules (N<sub>2<\/sub>, O<sub>2<\/sub>) or using mass fractions instead of mole fractions."}, {"q_num": 2, "chapter_num": 2, "chapter_name": "Structure of the Atom", "subtopic": "Quantum Numbers & Orbital Validity", "difficulty": "Challenging", "stem_html": "Consider the following statements about quantum numbers and atomic orbitals:<br>1. An electron with quantum numbers <em>n<\/em> = 3, <em>l<\/em> = 2, <em>m<sub>l<\/sub><\/em> = &minus;2, <em>m<sub>s<\/sub><\/em> = +&frac12; occupies a 3d orbital.<br>2. The maximum number of electrons in an atom that can simultaneously have <em>n<\/em> = 4 and <em>m<sub>l<\/sub><\/em> = 0 is 8.<br>3. A 2d orbital is allowed because <em>n<\/em> = 2 and <em>l<\/em> = 2 satisfy <em>l<\/em> &le; <em>n<\/em>.<br><br>Which of the statements is/are correct?", "options": {"A": "1 and 2 only", "B": "1 only", "C": "1 and 3 only", "D": "2 and 3 only", "E": "1, 2 and 3"}, "correct": "A", "solution_html": "Statement 1 is correct: <em>n<\/em> = 3 and <em>l<\/em> = 2 specify a 3d orbital, <em>m<sub>l<\/sub><\/em> = &minus;2 lies within &minus;<em>l<\/em> to +<em>l<\/em>, and <em>m<sub>s<\/sub><\/em> = +&frac12; is valid. Statement 2 is correct: for <em>n<\/em> = 4, there are four subshells (4s, 4p, 4d, 4f corresponding to <em>l<\/em> = 0, 1, 2, 3), each containing exactly one orbital with <em>m<sub>l<\/sub><\/em> = 0, giving 4 orbitals &times; 2 electrons = 8 electrons. Statement 3 is incorrect because the angular momentum quantum number obeys 0 &le; <em>l<\/em> &le; <em>n<\/em> &minus; 1, so for <em>n<\/em> = 2 the maximum value of <em>l<\/em> is 1 (2p); 2d orbitals do not exist.", "imat_trap": "Confusing <em>l<\/em> &le; <em>n<\/em> &minus; 1 with <em>l<\/em> &le; <em>n<\/em>, or forgetting that every subshell (s, p, d, f) contains an orbital with <em>m<sub>l<\/sub><\/em> = 0."}, {"q_num": 3, "chapter_num": 3, "chapter_name": "Periodic System of Elements", "subtopic": "Ionisation Energy Anomalies", "difficulty": "Easy-Moderate", "stem_html": "Which of the following correctly lists the Period 3 elements Na, Mg, Al, P, and S in order of <strong>increasing<\/strong> first ionisation energy?", "options": {"A": "Na &lt; Mg &lt; Al &lt; P &lt; S", "B": "Na &lt; Mg &lt; Al &lt; S &lt; P", "C": "Na &lt; Al &lt; Mg &lt; P &lt; S", "D": "Na &lt; Al &lt; Mg &lt; S &lt; P", "E": "Al &lt; Na &lt; Mg &lt; S &lt; P"}, "correct": "D", "solution_html": "First ionisation energy generally increases across Period 3 due to rising nuclear charge, but two subshell anomalies occur. Al (3s<sup>2<\/sup>3p<sup>1<\/sup>) has a lower first ionisation energy than Mg (3s<sup>2<\/sup>) because its outer electron is removed from a higher-energy, more shielded 3p orbital. Similarly, S (3p<sup>4<\/sup>) has a lower first ionisation energy than P (3p<sup>3<\/sup>) due to spin-pairing repulsion in the doubly occupied 3p orbital, giving Na &lt; Al &lt; Mg &lt; S &lt; P.", "imat_trap": "Assuming first ionisation energy increases strictly with atomic number across a period and missing both the Group 2/13 and Group 15/16 dips."}, {"q_num": 4, "chapter_num": 4, "chapter_name": "The Chemical Bond", "subtopic": "VSEPR Geometry & Bond-Angle Compression", "difficulty": "Easy-Moderate", "stem_html": "Which of the following lists the molecules BF<sub>3<\/sub>, CH<sub>4<\/sub>, NH<sub>3<\/sub>, and H<sub>2<\/sub>O in order of <strong>decreasing<\/strong> bond angle around the central atom?", "options": {"A": "CH<sub>4<\/sub> &gt; BF<sub>3<\/sub> &gt; NH<sub>3<\/sub> &gt; H<sub>2<\/sub>O", "B": "BF<sub>3<\/sub> &gt; CH<sub>4<\/sub> &gt; NH<sub>3<\/sub> &gt; H<sub>2<\/sub>O", "C": "BF<sub>3<\/sub> &gt; NH<sub>3<\/sub> &gt; CH<sub>4<\/sub> &gt; H<sub>2<\/sub>O", "D": "H<sub>2<\/sub>O &gt; NH<sub>3<\/sub> &gt; CH<sub>4<\/sub> &gt; BF<sub>3<\/sub>", "E": "BF<sub>3<\/sub> &gt; CH<sub>4<\/sub> &gt; H<sub>2<\/sub>O &gt; NH<sub>3<\/sub>"}, "correct": "B", "solution_html": "BF<sub>3<\/sub> has 3 bonding pairs and 0 lone pairs on boron, giving a trigonal planar geometry with a 120&deg; bond angle. CH<sub>4<\/sub>, NH<sub>3<\/sub>, and H<sub>2<\/sub>O all have 4 electron domains around the central atom, but lone-pair&ndash;bonding-pair repulsion exceeds bonding-pair&ndash;bonding-pair repulsion, compressing the angle as lone pairs increase: CH<sub>4<\/sub> (0 lone pairs, 109.5&deg;) &gt; NH<sub>3<\/sub> (1 lone pair, ~107&deg;) &gt; H<sub>2<\/sub>O (2 lone pairs, ~104.5&deg;).", "imat_trap": "Thinking CH<sub>4<\/sub>, NH<sub>3<\/sub>, and H<sub>2<\/sub>O share the same tetrahedral angle, or reversing the effect of lone-pair compression."}, {"q_num": 5, "chapter_num": 4, "chapter_name": "The Chemical Bond", "subtopic": "Intermolecular Forces & Boiling-Point Ordering", "difficulty": "Moderate", "stem_html": "The four organic compounds below have nearly identical molar masses (44&ndash;46 g mol<sup>&minus;1<\/sup>). Which option lists them in order of <strong>increasing<\/strong> normal boiling point?", "options": {"A": "CH<sub>3<\/sub>OCH<sub>3<\/sub> &lt; CH<sub>3<\/sub>CH<sub>2<\/sub>CH<sub>3<\/sub> &lt; CH<sub>3<\/sub>CH<sub>2<\/sub>OH &lt; HCOOH", "B": "CH<sub>3<\/sub>CH<sub>2<\/sub>CH<sub>3<\/sub> &lt; CH<sub>3<\/sub>CH<sub>2<\/sub>OH &lt; CH<sub>3<\/sub>OCH<sub>3<\/sub> &lt; HCOOH", "C": "CH<sub>3<\/sub>CH<sub>2<\/sub>CH<sub>3<\/sub> &lt; CH<sub>3<\/sub>OCH<sub>3<\/sub> &lt; HCOOH &lt; CH<sub>3<\/sub>CH<sub>2<\/sub>OH", "D": "HCOOH &lt; CH<sub>3<\/sub>CH<sub>2<\/sub>OH &lt; CH<sub>3<\/sub>OCH<sub>3<\/sub> &lt; CH<sub>3<\/sub>CH<sub>2<\/sub>CH<sub>3<\/sub>", "E": "CH<sub>3<\/sub>CH<sub>2<\/sub>CH<sub>3<\/sub> &lt; CH<sub>3<\/sub>OCH<sub>3<\/sub> &lt; CH<sub>3<\/sub>CH<sub>2<\/sub>OH &lt; HCOOH"}, "correct": "E", "solution_html": "At comparable molar mass, boiling point is governed by intermolecular force strength. Propane (CH<sub>3<\/sub>CH<sub>2<\/sub>CH<sub>3<\/sub>, &minus;42 &deg;C) is nonpolar with London dispersion forces only; dimethyl ether (CH<sub>3<\/sub>OCH<sub>3<\/sub>, &minus;24 &deg;C) is polar with permanent dipole&ndash;dipole interactions but cannot self-hydrogen-bond; ethanol (CH<sub>3<\/sub>CH<sub>2<\/sub>OH, +78 &deg;C) forms intermolecular hydrogen bonds; and methanoic acid (HCOOH, +101 &deg;C) forms even stronger cyclic hydrogen-bonded dimers.", "imat_trap": "Assuming an ether (CH<sub>3<\/sub>OCH<sub>3<\/sub>) can form hydrogen bonds with itself simply because it contains oxygen and hydrogen atoms."}, {"q_num": 6, "chapter_num": 5, "chapter_name": "Fundamentals of Inorganic Chemistry", "subtopic": "Classification of Oxides", "difficulty": "Easy-Moderate", "stem_html": "Which of the following options correctly classifies the four oxides Na<sub>2<\/sub>O, Al<sub>2<\/sub>O<sub>3<\/sub>, SO<sub>3<\/sub>, and CO?", "options": {"A": "Na<sub>2<\/sub>O = basic; Al<sub>2<\/sub>O<sub>3<\/sub> = basic; SO<sub>3<\/sub> = acidic; CO = acidic", "B": "Na<sub>2<\/sub>O = basic; Al<sub>2<\/sub>O<sub>3<\/sub> = amphoteric; SO<sub>3<\/sub> = acidic; CO = neutral", "C": "Na<sub>2<\/sub>O = amphoteric; Al<sub>2<\/sub>O<sub>3<\/sub> = basic; SO<sub>3<\/sub> = acidic; CO = neutral", "D": "Na<sub>2<\/sub>O = basic; Al<sub>2<\/sub>O<sub>3<\/sub> = amphoteric; SO<sub>3<\/sub> = neutral; CO = acidic", "E": "Na<sub>2<\/sub>O = basic; Al<sub>2<\/sub>O<sub>3<\/sub> = acidic; SO<sub>3<\/sub> = acidic; CO = neutral"}, "correct": "B", "solution_html": "Na<sub>2<\/sub>O is an ionic alkali-metal oxide that reacts with water to form NaOH, making it basic. Al<sub>2<\/sub>O<sub>3<\/sub> reacts with both acids and strong bases, so it is amphoteric. SO<sub>3<\/sub> is a covalent non-metal oxide that forms H<sub>2<\/sub>SO<sub>4<\/sub> in water (acidic), whereas CO does not react with acids or bases to form salts and is classified as a neutral oxide.", "imat_trap": "Classifying all non-metal oxides as acidic and overlooking neutral oxides such as CO, NO, and N<sub>2<\/sub>O."}, {"q_num": 7, "chapter_num": 6, "chapter_name": "Chemical Reactions & Stoichiometry", "subtopic": "Limiting Reactant & Product Mass Calculation", "difficulty": "Moderate", "stem_html": "Iron(III) oxide reacts with carbon monoxide according to the balanced equation:<br>Fe<sub>2<\/sub>O<sub>3<\/sub>(s) + 3CO(g) &rarr; 2Fe(s) + 3CO<sub>2<\/sub>(g)<br><br>If 32.0 g of Fe<sub>2<\/sub>O<sub>3<\/sub> is heated with 8.4 g of CO, what is the maximum mass of iron (Fe) that can be produced?<br><em>[A<sub>r<\/sub>: C = 12, O = 16, Fe = 56]<\/em>", "options": {"A": "5.6 g", "B": "16.8 g", "C": "22.4 g", "D": "11.2 g", "E": "13.2 g"}, "correct": "D", "solution_html": "First find the moles of each reactant: <em>M<\/em>(Fe<sub>2<\/sub>O<sub>3<\/sub>) = 2(56) + 3(16) = 160 g mol<sup>&minus;1<\/sup>, so <em>n<\/em>(Fe<sub>2<\/sub>O<sub>3<\/sub>) = 32.0 / 160 = 0.20 mol; <em>M<\/em>(CO) = 12 + 16 = 28 g mol<sup>&minus;1<\/sup>, so <em>n<\/em>(CO) = 8.4 / 28 = 0.30 mol. Complete reaction of 0.20 mol Fe<sub>2<\/sub>O<sub>3<\/sub> would require 3 &times; 0.20 = 0.60 mol CO, so CO is the limiting reactant. From the 3 : 2 ratio of CO to Fe, <em>n<\/em>(Fe) = (2 / 3) &times; 0.30 = 0.20 mol, giving a mass of 0.20 &times; 56 = 11.2 g (option C uses the excess reactant, and option B ignores the 2 : 3 ratio).", "imat_trap": "Identifying the reactant with fewer moles (Fe<sub>2<\/sub>O<sub>3<\/sub>) as limiting without dividing by its stoichiometric coefficient."}, {"q_num": 8, "chapter_num": 6, "chapter_name": "Chemical Reactions & Stoichiometry", "subtopic": "Empirical & Molecular Formula", "difficulty": "Moderate", "stem_html": "An organic compound contains 60.0% carbon, 8.0% hydrogen, and 32.0% oxygen by mass. If its molar mass is 200 g mol<sup>&minus;1<\/sup>, what is its molecular formula?<br><em>[A<sub>r<\/sub>: H = 1, C = 12, O = 16]<\/em>", "options": {"A": "C<sub>10<\/sub>H<sub>16<\/sub>O<sub>4<\/sub>", "B": "C<sub>5<\/sub>H<sub>8<\/sub>O<sub>2<\/sub>", "C": "C<sub>8<\/sub>H<sub>12<\/sub>O<sub>6<\/sub>", "D": "C<sub>10<\/sub>H<sub>8<\/sub>O<sub>4<\/sub>", "E": "C<sub>12<\/sub>H<sub>16<\/sub>O<sub>2<\/sub>"}, "correct": "A", "solution_html": "In a 100 g sample, the mole ratio is C : H : O = (60.0 / 12) : (8.0 / 1) : (32.0 / 16) = 5 : 8 : 2, giving the empirical formula C<sub>5<\/sub>H<sub>8<\/sub>O<sub>2<\/sub>. The empirical formula mass is 5(12) + 8(1) + 2(16) = 100 g mol<sup>&minus;1<\/sup>. Dividing the molar mass by the empirical mass gives 200 / 100 = 2, so the molecular formula is C<sub>10<\/sub>H<sub>16<\/sub>O<sub>4<\/sub> (option B stops at the empirical formula).", "imat_trap": "Selecting the empirical formula (C<sub>5<\/sub>H<sub>8<\/sub>O<sub>2<\/sub>) and forgetting to scale up using the given molar mass."}, {"q_num": 9, "chapter_num": 7, "chapter_name": "Solutions", "subtopic": "Mixing Solutions of the Same Solute", "difficulty": "Easy-Moderate", "stem_html": "What is the final molar concentration of NaCl when 200 mL of 0.50 mol L<sup>&minus;1<\/sup> NaCl(aq) is mixed with 300 mL of 1.50 mol L<sup>&minus;1<\/sup> NaCl(aq)? (Assume volumes are additive.)", "options": {"A": "0.55 mol L<sup>&minus;1<\/sup>", "B": "0.90 mol L<sup>&minus;1<\/sup>", "C": "1.00 mol L<sup>&minus;1<\/sup>", "D": "1.25 mol L<sup>&minus;1<\/sup>", "E": "1.10 mol L<sup>&minus;1<\/sup>"}, "correct": "E", "solution_html": "Calculate the total moles of NaCl: <em>n<\/em><sub>1<\/sub> = 0.200 L &times; 0.50 mol L<sup>&minus;1<\/sup> = 0.10 mol and <em>n<\/em><sub>2<\/sub> = 0.300 L &times; 1.50 mol L<sup>&minus;1<\/sup> = 0.45 mol, so <em>n<\/em><sub>total<\/sub> = 0.55 mol. Dividing by the total volume <em>V<\/em><sub>total<\/sub> = 0.200 L + 0.300 L = 0.500 L gives <em>c<\/em> = 0.55 / 0.500 = 1.10 mol L<sup>&minus;1<\/sup>. Option C (1.00 mol L<sup>&minus;1<\/sup>) is the unweighted average of the two concentrations, and option A forgets to divide by 0.500 L.", "imat_trap": "Taking the simple arithmetic mean of the two molarities when the volumes mixed are unequal."}, {"q_num": 10, "chapter_num": 9, "chapter_name": "Elements of Chemical Kinetics & Catalysis", "subtopic": "Rate Law, Order & Rate Constant Units", "difficulty": "Challenging", "stem_html": "Initial-rate data were collected at constant temperature for the reaction X(g) + 2Y(g) &rarr; Z(g):<table style=\"border-collapse:collapse;margin:8px 0;font-size:0.92em;\"><thead><tr><th style=\"border:1px solid #cbd5e1;padding:4px 8px;\">Experiment<\/th><th style=\"border:1px solid #cbd5e1;padding:4px 8px;\">[X] / mol L<sup>&minus;1<\/sup><\/th><th style=\"border:1px solid #cbd5e1;padding:4px 8px;\">[Y] / mol L<sup>&minus;1<\/sup><\/th><th style=\"border:1px solid #cbd5e1;padding:4px 8px;\">Initial Rate / mol L<sup>&minus;1<\/sup> s<sup>&minus;1<\/sup><\/th><\/tr><\/thead><tbody><tr><td style=\"border:1px solid #cbd5e1;padding:4px 8px;\">1<\/td><td style=\"border:1px solid #cbd5e1;padding:4px 8px;\">0.10<\/td><td style=\"border:1px solid #cbd5e1;padding:4px 8px;\">0.10<\/td><td style=\"border:1px solid #cbd5e1;padding:4px 8px;\">2.0 &times; 10<sup>&minus;3<\/sup><\/td><\/tr><tr><td style=\"border:1px solid #cbd5e1;padding:4px 8px;\">2<\/td><td style=\"border:1px solid #cbd5e1;padding:4px 8px;\">0.20<\/td><td style=\"border:1px solid #cbd5e1;padding:4px 8px;\">0.10<\/td><td style=\"border:1px solid #cbd5e1;padding:4px 8px;\">8.0 &times; 10<sup>&minus;3<\/sup><\/td><\/tr><tr><td style=\"border:1px solid #cbd5e1;padding:4px 8px;\">3<\/td><td style=\"border:1px solid #cbd5e1;padding:4px 8px;\">0.20<\/td><td style=\"border:1px solid #cbd5e1;padding:4px 8px;\">0.30<\/td><td style=\"border:1px solid #cbd5e1;padding:4px 8px;\">2.4 &times; 10<sup>&minus;2<\/sup><\/td><\/tr><\/tbody><\/table>What are the experimental rate law and the value (with units) of the rate constant <em>k<\/em>?", "options": {"A": "rate = <em>k<\/em>[X][Y]<sup>2<\/sup>; <em>k<\/em> = 2.0 L<sup>2<\/sup> mol<sup>&minus;2<\/sup> s<sup>&minus;1<\/sup>", "B": "rate = <em>k<\/em>[X]<sup>2<\/sup>[Y]; <em>k<\/em> = 2.0 L mol<sup>&minus;1<\/sup> s<sup>&minus;1<\/sup>", "C": "rate = <em>k<\/em>[X]<sup>2<\/sup>[Y]; <em>k<\/em> = 2.0 L<sup>2<\/sup> mol<sup>&minus;2<\/sup> s<sup>&minus;1<\/sup>", "D": "rate = <em>k<\/em>[X]<sup>2<\/sup>[Y]<sup>2<\/sup>; <em>k<\/em> = 20 L<sup>3<\/sup> mol<sup>&minus;3<\/sup> s<sup>&minus;1<\/sup>", "E": "rate = <em>k<\/em>[X]<sup>2<\/sup>[Y]; <em>k<\/em> = 0.20 L<sup>2<\/sup> mol<sup>&minus;2<\/sup> s<sup>&minus;1<\/sup>"}, "correct": "C", "solution_html": "Comparing Experiments 1 and 2 at constant [Y], doubling [X] quadruples the rate (4 = 2<sup>2<\/sup>), so the reaction is second order in X. Comparing Experiments 2 and 3 at constant [X], tripling [Y] triples the rate (8.0 &times; 10<sup>&minus;3<\/sup> &rarr; 2.4 &times; 10<sup>&minus;2<\/sup>), so it is first order in Y, giving rate = <em>k<\/em>[X]<sup>2<\/sup>[Y] (overall order 3). From Experiment 1, <em>k<\/em> = (2.0 &times; 10<sup>&minus;3<\/sup>) / (0.10<sup>2<\/sup> &times; 0.10) = 2.0 L<sup>2<\/sup> mol<sup>&minus;2<\/sup> s<sup>&minus;1<\/sup>; option A wrongly copies stoichiometric coefficients and option B gives second-order units.", "imat_trap": "Assuming reaction orders match the stoichiometric coefficients in the balanced equation, or picking second-order units for a third-order rate constant."}, {"q_num": 11, "chapter_num": 10, "chapter_name": "Oxidation and Reduction", "subtopic": "Oxidation Number Traps (Peroxo Species)", "difficulty": "Challenging", "stem_html": "What are the oxidation numbers of sulfur in the peroxodisulfate ion (S<sub>2<\/sub>O<sub>8<\/sub><sup>2&minus;<\/sup>, which contains one &minus;O&minus;O&minus; peroxo bridge), oxygen in hydrogen peroxide (H<sub>2<\/sub>O<sub>2<\/sub>), and chromium in the dichromate ion (Cr<sub>2<\/sub>O<sub>7<\/sub><sup>2&minus;<\/sup>), respectively?", "options": {"A": "+7, &minus;1, +6", "B": "+6, &minus;1, +6", "C": "+7, &minus;2, +6", "D": "+6, &minus;2, +7", "E": "+6, &minus;1, +7"}, "correct": "B", "solution_html": "In S<sub>2<\/sub>O<sub>8<\/sub><sup>2&minus;<\/sup>, six oxygens are standard oxo (&minus;2) and two form the &minus;O&minus;O&minus; peroxo bridge (&minus;1), so 2<em>x<\/em> + 6(&minus;2) + 2(&minus;1) = &minus;2 &rarr; <em>x<\/em> = +6 (sulfur cannot exceed its Group 16 maximum of +6). In H<sub>2<\/sub>O<sub>2<\/sub>, oxygen has an oxidation number of &minus;1. In Cr<sub>2<\/sub>O<sub>7<\/sub><sup>2&minus;<\/sup>, all seven oxygens are &minus;2, so 2<em>y<\/em> + 7(&minus;2) = &minus;2 &rarr; <em>y<\/em> = +6.", "imat_trap": "Blindly assigning &minus;2 to every oxygen in S<sub>2<\/sub>O<sub>8<\/sub><sup>2&minus;<\/sup>, which produces the impossible oxidation state +7 for sulfur."}, {"q_num": 12, "chapter_num": 11, "chapter_name": "Acids and Bases", "subtopic": "pH of Strong Acid & Strong Base Mixture", "difficulty": "Moderate", "stem_html": "At 25 &deg;C, 400 mL of 0.050 mol L<sup>&minus;1<\/sup> HCl(aq) is mixed with 600 mL of 0.050 mol L<sup>&minus;1<\/sup> NaOH(aq). Assuming volumes are additive, what is the pH of the resulting solution?", "options": {"A": "2.0", "B": "7.0", "C": "11.0", "D": "12.0", "E": "13.0"}, "correct": "D", "solution_html": "Compute the moles of H<sup>+<\/sup> and OH<sup>&minus;<\/sup>: <em>n<\/em>(H<sup>+<\/sup>) = 0.400 L &times; 0.050 mol L<sup>&minus;1<\/sup> = 0.020 mol and <em>n<\/em>(OH<sup>&minus;<\/sup>) = 0.600 L &times; 0.050 mol L<sup>&minus;1<\/sup> = 0.030 mol. After neutralisation, 0.010 mol of OH<sup>&minus;<\/sup> remains in a total volume of 0.400 + 0.600 = 1.000 L, so [OH<sup>&minus;<\/sup>] = 1.0 &times; 10<sup>&minus;2<\/sup> mol L<sup>&minus;1<\/sup>. Therefore pOH = 2.0 and pH = 14.0 &minus; 2.0 = 12.0 (option A reports pOH instead of pH, and option B ignores the unequal volumes).", "imat_trap": "Stopping at pOH = 2.0 and selecting it as the pH, or assuming equal initial concentrations guarantee a neutral pH of 7.0."}, {"q_num": 13, "chapter_num": 11, "chapter_name": "Acids and Bases", "subtopic": "Br&oslash;nsted&ndash;Lowry Conjugate Pairs & Amphiprotic Species", "difficulty": "Moderate", "stem_html": "Consider the following statements regarding Br&oslash;nsted&ndash;Lowry acid&ndash;base theory:<br>1. In the equilibrium H<sub>2<\/sub>PO<sub>4<\/sub><sup>&minus;<\/sup> + H<sub>2<\/sub>O &rightleftharpoons; HPO<sub>4<\/sub><sup>2&minus;<\/sup> + H<sub>3<\/sub>O<sup>+<\/sup>, H<sub>2<\/sub>PO<sub>4<\/sub><sup>&minus;<\/sup> and HPO<sub>4<\/sub><sup>2&minus;<\/sup> form a conjugate acid&ndash;base pair.<br>2. The hydrogen carbonate ion (HCO<sub>3<\/sub><sup>&minus;<\/sup>) is amphiprotic because it can donate a proton to form CO<sub>3<\/sub><sup>2&minus;<\/sup> or accept a proton to form H<sub>2<\/sub>CO<sub>3<\/sub>.<br>3. The conjugate base of H<sub>2<\/sub>SO<sub>4<\/sub> is SO<sub>4<\/sub><sup>2&minus;<\/sup>.<br><br>Which of the statements is/are correct?", "options": {"A": "1 only", "B": "2 only", "C": "1 and 3 only", "D": "1, 2 and 3", "E": "1 and 2 only"}, "correct": "E", "solution_html": "Statement 1 is correct because H<sub>2<\/sub>PO<sub>4<\/sub><sup>&minus;<\/sup> and HPO<sub>4<\/sub><sup>2&minus;<\/sup> differ by a single proton (H<sup>+<\/sup>). Statement 2 is correct because HCO<sub>3<\/sub><sup>&minus;<\/sup> can act as either a proton donor or a proton acceptor. Statement 3 is incorrect because a conjugate acid&ndash;base pair differs by exactly one proton: the conjugate base of H<sub>2<\/sub>SO<sub>4<\/sub> is HSO<sub>4<\/sub><sup>&minus;<\/sup>, while SO<sub>4<\/sub><sup>2&minus;<\/sup> is the conjugate base of HSO<sub>4<\/sub><sup>&minus;<\/sup>.", "imat_trap": "Removing two protons from a diprotic acid (H<sub>2<\/sub>SO<sub>4<\/sub> &rarr; SO<sub>4<\/sub><sup>2&minus;<\/sup>) instead of exactly one proton to form its conjugate base."}, {"q_num": 14, "chapter_num": 12, "chapter_name": "Fundamentals of Organic Chemistry", "subtopic": "IUPAC Nomenclature of Polyfunctional Compounds", "difficulty": "Challenging", "stem_html": "What is the correct IUPAC name of the polyfunctional organic compound shown below?<br>CH<sub>3<\/sub>&minus;CH(OH)&minus;CH<sub>2<\/sub>&minus;CO&minus;CH<sub>2<\/sub>&minus;COOH", "options": {"A": "5-hydroxy-3-oxohexanoic acid", "B": "2-hydroxy-4-oxohexanoic acid", "C": "3-oxo-5-hydroxyhexanoic acid", "D": "4-hydroxy-2-oxopentanoic acid", "E": "1-carboxy-4-hydroxypentan-2-one"}, "correct": "A", "solution_html": "The carboxylic acid group (&minus;COOH) has the highest IUPAC priority, so its carbon is C-1 of the six-carbon parent chain (hexanoic acid). Numbering from C-1 places the ketone carbonyl at C-3 (prefix <em>oxo<\/em>) and the hydroxyl group at C-5 (prefix <em>hydroxy<\/em>). Listing prefixes in alphabetical order (&lsquo;h&rsquo; before &lsquo;o&rsquo;) yields 5-hydroxy-3-oxohexanoic acid; option B numbers from the wrong end, option C violates alphabetical order, and option D omits the &minus;COOH carbon from the parent chain.", "imat_trap": "Numbering from the alcohol end to get lower locants, excluding the &minus;COOH carbon from the parent chain, or ordering prefixes by locant instead of alphabetically."}, {"q_num": 15, "chapter_num": 12, "chapter_name": "Fundamentals of Organic Chemistry", "subtopic": "Structural & Geometric (cis-trans / E-Z) Isomerism", "difficulty": "Moderate", "stem_html": "All five compounds below are open-chain alkene structural isomers with the molecular formula C<sub>5<\/sub>H<sub>10<\/sub>. Which one exhibits geometric (<em>cis<\/em>&ndash;<em>trans<\/em> / <em>E<\/em>&ndash;<em>Z<\/em>) isomerism?", "options": {"A": "2-methylbut-1-ene", "B": "2-methylbut-2-ene", "C": "pent-2-ene", "D": "pent-1-ene", "E": "3-methylbut-1-ene"}, "correct": "C", "solution_html": "Geometric isomerism in an alkene requires restricted rotation about C=C and two different groups attached to <em>each<\/em> doubly bonded carbon. In pent-2-ene (CH<sub>3<\/sub>CH=CHCH<sub>2<\/sub>CH<sub>3<\/sub>), C-2 bears H and &minus;CH<sub>3<\/sub> while C-3 bears H and &minus;CH<sub>2<\/sub>CH<sub>3<\/sub>, allowing <em>cis<\/em>/<em>trans<\/em> (<em>Z<\/em>/<em>E<\/em>) isomers. In options A, D, and E, C-1 carries two identical H atoms; in option B (2-methylbut-2-ene), C-2 carries two identical &minus;CH<sub>3<\/sub> groups.", "imat_trap": "Thinking any internal alkene such as 2-methylbut-2-ene shows <em>cis<\/em>&ndash;<em>trans<\/em> isomerism without checking whether one C=C carbon carries two identical methyl groups."}]};
+const SET_PAD = "01";
+const QUESTIONS = TEST_DATA.questions;
+const TOTAL_SECONDS = 25 * 60;
+const STORAGE_KEY = "imat_chem_attempts_set_" + SET_PAD;
+const WEBHOOK_STORAGE_KEY = "imat_chem_webhook_url";
+// Optional: Teacher can paste their Google Apps Script Web App URL inside the quotes below for 100% automatic live leaderboard across all student devices.
+const GOOGLE_SHEET_WEBHOOK_URL = "";
+
+let state = {
+  studentName: "",
+  studentRoll: "",
+  currentIdx: 0,
+  answers: {},
+  review: {},
+  secondsLeft: TOTAL_SECONDS,
+  timerId: null,
+  submitted: false,
+  filter: "all",
+  lastResultRecord: null,
+  previousScreen: "startScreen",
+  attempts: []
+};
+
+const el = (id) => document.getElementById(id);
+
+function showToast(msg) {
+  const t = el("toast");
+  t.textContent = msg;
+  t.classList.remove("hidden");
+  clearTimeout(showToast._tid);
+  showToast._tid = setTimeout(() => t.classList.add("hidden"), 2800);
+}
+
+function getWebhookUrl() {
+  if (GOOGLE_SHEET_WEBHOOK_URL && GOOGLE_SHEET_WEBHOOK_URL.startsWith("https://")) {
+    return GOOGLE_SHEET_WEBHOOK_URL.trim();
+  }
+  try {
+    const saved = localStorage.getItem(WEBHOOK_STORAGE_KEY) || "";
+    return saved.startsWith("https://") ? saved.trim() : "";
+  } catch (err) {
+    return "";
+  }
+}
+
+function loadLocalAttempts() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    const parsed = raw ? JSON.parse(raw) : [];
+    return Array.isArray(parsed) ? parsed : [];
+  } catch (err) {
+    return [];
+  }
+}
+
+function saveLocalAttempts(list) {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(list));
+  } catch (err) {
+    // Ignore storage quota / sandbox restrictions
+  }
+}
+
+function mergeAttempts(baseList, incomingList) {
+  const byKey = new Map();
+  baseList.forEach((r) => {
+    const k = (String(r.roll || "").trim().toLowerCase()) + "|" + (String(r.name || "").trim().toLowerCase());
+    byKey.set(k, r);
+  });
+  incomingList.forEach((r) => {
+    const k = (String(r.roll || "").trim().toLowerCase()) + "|" + (String(r.name || "").trim().toLowerCase());
+    byKey.set(k, r);
+  });
+  return Array.from(byKey.values());
+}
+
+function parseTimeToSec(str) {
+  const parts = String(str || "25:00").split(":");
+  if (parts.length !== 2) return 1500;
+  return (parseInt(parts[0], 10) || 0) * 60 + (parseInt(parts[1], 10) || 0);
+}
+
+function sortLeaderboard(list) {
+  return [...list].sort((a, b) => {
+    if (Number(b.score) !== Number(a.score)) return Number(b.score) - Number(a.score);
+    if (Number(b.accuracy) !== Number(a.accuracy)) return Number(b.accuracy) - Number(a.accuracy);
+    return parseTimeToSec(a.time) - parseTimeToSec(b.time);
+  });
+}
+
+function formatTime(sec) {
+  const m = Math.floor(sec / 60);
+  const s = sec % 60;
+  return String(m).padStart(2, "0") + ":" + String(s).padStart(2, "0");
+}
+
+function buildResultCode(rec) {
+  return [
+    "IMATRES",
+    SET_PAD,
+    rec.name.replace(/\|/g, " "),
+    rec.roll.replace(/\|/g, " "),
+    Number(rec.score).toFixed(1),
+    rec.correct,
+    rec.wrong,
+    rec.skipped,
+    rec.accuracy,
+    rec.time
+  ].join("|");
+}
+
+function copyTextSafe(text, successMsg) {
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(text).then(() => {
+      showToast(successMsg);
+    }).catch(() => fallbackCopy(text, successMsg));
+  } else {
+    fallbackCopy(text, successMsg);
+  }
+}
+
+function fallbackCopy(text, successMsg) {
+  const ta = document.createElement("textarea");
+  ta.value = text;
+  ta.style.position = "fixed";
+  ta.style.opacity = "0";
+  document.body.appendChild(ta);
+  ta.select();
+  try {
+    document.execCommand("copy");
+    showToast(successMsg);
+  } catch (err) {
+    showToast("Could not copy automatically — please copy manually.");
+  }
+  document.body.removeChild(ta);
+}
+
+async function syncToCloud(rec) {
+  const url = getWebhookUrl();
+  const badge = el("cloudSyncBadge");
+  if (!url) {
+    badge.textContent = "Saved Locally (Copy code for Teacher)";
+    badge.className = "sync-pill";
+    return;
+  }
+  badge.textContent = "Syncing to Cloud...";
+  badge.className = "sync-pill";
+  try {
+    await fetch(url, {
+      method: "POST",
+      mode: "no-cors",
+      headers: { "Content-Type": "text/plain;charset=utf-8" },
+      body: JSON.stringify(rec)
+    });
+    badge.textContent = "Synced to Teacher Sheet \u2713";
+    badge.className = "sync-pill ok";
+    await fetchCloudLeaderboard();
+  } catch (err) {
+    badge.textContent = "Saved Locally (Offline fallback)";
+    badge.className = "sync-pill";
+  }
+}
+
+async function fetchCloudLeaderboard() {
+  const url = getWebhookUrl();
+  if (!url) return;
+  try {
+    const resp = await fetch(url + "?set=" + encodeURIComponent(SET_PAD));
+    if (!resp.ok) return;
+    const data = await resp.json();
+    if (Array.isArray(data) && data.length > 0) {
+      state.attempts = mergeAttempts(state.attempts, data);
+      saveLocalAttempts(state.attempts);
+      renderResultLeaderboard();
+      renderTrackerScreen();
+    }
+  } catch (err) {
+    // Silent fallback to local attempts
+  }
+}
+
+function renderResultLeaderboard() {
+  const tbody = el("resultLeaderboardBody");
+  const sorted = sortLeaderboard(state.attempts);
+  const top10 = sorted.slice(0, 10);
+  el("lbResultMeta").textContent = "Showing Top " + top10.length + " of " + sorted.length + " recorded attempt(s)";
+  tbody.innerHTML = "";
+  if (top10.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:var(--muted);">No attempts recorded yet.</td></tr>';
+    return;
+  }
+  top10.forEach((r, idx) => {
+    const rank = idx + 1;
+    const isMe = state.lastResultRecord && r.roll === state.lastResultRecord.roll && r.name === state.lastResultRecord.name;
+    const rCls = rank === 1 ? "rank-1" : (rank === 2 ? "rank-2" : (rank === 3 ? "rank-3" : ""));
+    const tr = document.createElement("tr");
+    if (isMe) tr.className = "rank-row-me";
+    tr.innerHTML =
+      '<td><span class="rank-badge ' + rCls + '">#' + rank + '</span></td>' +
+      '<td>' + escapeHtml(r.name) + (isMe ? ' <span style="color:var(--accent);font-size:0.78rem;">(You)</span>' : '') + '</td>' +
+      '<td>' + escapeHtml(r.roll) + '</td>' +
+      '<td class="num"><strong>' + Number(r.score).toFixed(1) + '</strong></td>' +
+      '<td class="num">' + r.accuracy + '%</td>' +
+      '<td class="num">' + escapeHtml(r.time) + '</td>';
+    tbody.appendChild(tr);
+  });
+}
+
+function renderTrackerScreen() {
+  const sorted = sortLeaderboard(state.attempts);
+  const total = sorted.length;
+  const highest = total > 0 ? Math.max(...sorted.map((r) => Number(r.score))) : 0;
+  const avg = total > 0 ? sorted.reduce((acc, r) => acc + Number(r.score), 0) / total : 0;
+  const comp = sorted.filter((r) => Number(r.score) >= 13.5).length;
+
+  el("trkTotal").textContent = String(total);
+  el("trkHighest").textContent = highest.toFixed(1);
+  el("trkAvg").textContent = avg.toFixed(1);
+  el("trkTopCount").textContent = String(comp);
+
+  const topBody = el("trackerTop10Body");
+  topBody.innerHTML = "";
+  const top10 = sorted.slice(0, 10);
+  if (top10.length === 0) {
+    topBody.innerHTML = '<tr><td colspan="7" style="text-align:center;color:var(--muted);">No student attempts yet. Complete a test or paste student result codes below.</td></tr>';
+  } else {
+    top10.forEach((r, idx) => {
+      const rank = idx + 1;
+      const rCls = rank === 1 ? "rank-1" : (rank === 2 ? "rank-2" : (rank === 3 ? "rank-3" : ""));
+      const tr = document.createElement("tr");
+      tr.innerHTML =
+        '<td><span class="rank-badge ' + rCls + '">#' + rank + '</span></td>' +
+        '<td><strong>' + escapeHtml(r.name) + '</strong></td>' +
+        '<td>' + escapeHtml(r.roll) + '</td>' +
+        '<td class="num"><strong>' + Number(r.score).toFixed(1) + '</strong></td>' +
+        '<td class="num">' + r.correct + ' / ' + r.wrong + ' / ' + r.skipped + '</td>' +
+        '<td class="num">' + r.accuracy + '%</td>' +
+        '<td class="num">' + escapeHtml(r.time) + '</td>';
+      topBody.appendChild(tr);
+    });
+  }
+
+  const allBody = el("trackerAllBody");
+  allBody.innerHTML = "";
+  if (sorted.length === 0) {
+    allBody.innerHTML = '<tr><td colspan="7" style="text-align:center;color:var(--muted);">No attempts logged yet.</td></tr>';
+  } else {
+    sorted.forEach((r, idx) => {
+      const tr = document.createElement("tr");
+      tr.innerHTML =
+        '<td>' + (idx + 1) + '</td>' +
+        '<td>' + escapeHtml(r.name) + '</td>' +
+        '<td>' + escapeHtml(r.roll) + '</td>' +
+        '<td class="num"><strong>' + Number(r.score).toFixed(1) + '</strong></td>' +
+        '<td class="num">' + r.accuracy + '%</td>' +
+        '<td class="num">' + escapeHtml(r.time) + '</td>' +
+        '<td style="font-size:0.82rem;color:var(--muted);">' + escapeHtml(r.timestamp || "Imported") + '</td>';
+      allBody.appendChild(tr);
+    });
+  }
+  el("webhookInput").value = getWebhookUrl();
+}
+
+function escapeHtml(str) {
+  return String(str || "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
+}
+
+function startTimer() {
+  if (state.timerId) clearInterval(state.timerId);
+  updateTimerUI();
+  state.timerId = setInterval(() => {
+    state.secondsLeft -= 1;
+    updateTimerUI();
+    if (state.secondsLeft <= 0) {
+      clearInterval(state.timerId);
+      state.timerId = null;
+      finalizeTest();
+    }
+  }, 1000);
+}
+
+function updateTimerUI() {
+  const box = el("timerDisplay");
+  box.textContent = formatTime(Math.max(0, state.secondsLeft));
+  box.classList.remove("warn", "danger");
+  if (state.secondsLeft <= 60) box.classList.add("danger");
+  else if (state.secondsLeft <= 300) box.classList.add("warn");
+}
+
+function renderQuestion() {
+  const q = QUESTIONS[state.currentIdx];
+  el("qCounter").textContent = "Question " + (state.currentIdx + 1) + " of " + QUESTIONS.length;
+  el("qStem").innerHTML = q.stem_html;
+
+  const optsWrap = el("qOptions");
+  optsWrap.innerHTML = "";
+  ["A", "B", "C", "D", "E"].forEach((ltr) => {
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "opt-btn" + (state.answers[q.q_num] === ltr ? " selected" : "");
+    btn.innerHTML = '<span class="opt-circle">' + ltr + '</span><span>' + q.options[ltr] + '</span>';
+    btn.addEventListener("click", () => {
+      state.answers[q.q_num] = ltr;
+      renderQuestion();
+      renderPalette();
+    });
+    optsWrap.appendChild(btn);
+  });
+
+  const revBtn = el("reviewBtn");
+  const isRev = !!state.review[q.q_num];
+  revBtn.classList.toggle("active", isRev);
+  revBtn.textContent = isRev ? "Marked for Review" : "Mark for Review";
+
+  el("prevBtn").disabled = state.currentIdx === 0;
+  el("nextBtn").textContent = state.currentIdx === QUESTIONS.length - 1 ? "Review & Submit" : "Save & Next \u2192";
+}
+
+function renderPalette() {
+  const grid = el("paletteGrid");
+  grid.innerHTML = "";
+  let ans = 0, rev = 0;
+
+  QUESTIONS.forEach((q, idx) => {
+    const hasAns = !!state.answers[q.q_num];
+    const hasRev = !!state.review[q.q_num];
+    if (hasAns) ans++;
+    if (hasRev) rev++;
+
+    const b = document.createElement("button");
+    b.type = "button";
+    b.textContent = String(idx + 1);
+    b.className = "pal-btn";
+    if (hasRev) b.classList.add("review");
+    else if (hasAns) b.classList.add("answered");
+    if (idx === state.currentIdx) b.classList.add("current");
+    b.addEventListener("click", () => {
+      state.currentIdx = idx;
+      renderQuestion();
+      renderPalette();
+    });
+    grid.appendChild(b);
+  });
+
+  el("cntAns").textContent = String(ans);
+  el("cntRev").textContent = String(rev);
+  el("cntUn").textContent = String(QUESTIONS.length - ans);
+}
+
+function openSubmitModal() {
+  const ans = Object.keys(state.answers).length;
+  const rev = Object.keys(state.review).filter((k) => state.review[k]).length;
+  el("modAns").textContent = String(ans);
+  el("modRev").textContent = String(rev);
+  el("modUn").textContent = String(QUESTIONS.length - ans);
+  el("submitModal").classList.remove("hidden");
+}
+
+function closeSubmitModal() {
+  el("submitModal").classList.add("hidden");
+}
+
+function finalizeTest() {
+  if (state.submitted) return;
+  state.submitted = true;
+  if (state.timerId) {
+    clearInterval(state.timerId);
+    state.timerId = null;
+  }
+  closeSubmitModal();
+  el("examScreen").classList.add("hidden");
+  el("examHeaderRight").classList.add("hidden");
+  el("openLeaderboardBtn").classList.remove("hidden");
+  el("resultScreen").classList.remove("hidden");
+
+  let correct = 0, wrong = 0, skipped = 0;
+  const chStats = {};
+
+  QUESTIONS.forEach((q) => {
+    const picked = state.answers[q.q_num] || null;
+    const key = "Ch " + q.chapter_num + ": " + q.chapter_name;
+    if (!chStats[key]) chStats[key] = { num: q.chapter_num, total: 0, correct: 0, wrong: 0, skipped: 0 };
+    chStats[key].total++;
+
+    if (!picked) {
+      skipped++;
+      chStats[key].skipped++;
+    } else if (picked === q.correct) {
+      correct++;
+      chStats[key].correct++;
+    } else {
+      wrong++;
+      chStats[key].wrong++;
+    }
+  });
+
+  const netScore = Number((correct * 1.5 - wrong * 0.4).toFixed(2));
+  const attempted = correct + wrong;
+  const accuracy = attempted > 0 ? Math.round((correct / attempted) * 100) : 0;
+  const usedSec = TOTAL_SECONDS - Math.max(0, state.secondsLeft);
+  const timeStr = formatTime(usedSec);
+
+  let tier = "Foundation (Revise Core)";
+  if (netScore >= 18.0) tier = "Top Decile (Exam-Ready)";
+  else if (netScore >= 13.5) tier = "Competitive Score";
+  else if (netScore >= 9.0) tier = "Developing (Target High-Yield)";
+
+  const rec = {
+    timestamp: new Date().toLocaleString(),
+    set: SET_PAD,
+    name: state.studentName,
+    roll: state.studentRoll,
+    score: netScore,
+    correct: correct,
+    wrong: wrong,
+    skipped: skipped,
+    accuracy: accuracy,
+    time: timeStr
+  };
+  state.lastResultRecord = rec;
+  state.attempts = mergeAttempts(state.attempts, [rec]);
+  saveLocalAttempts(state.attempts);
+
+  el("resStudentMeta").textContent =
+    "Student: " + state.studentName + "  |  Roll No.: " + state.studentRoll + "  |  Time Taken: " + timeStr;
+  el("resNetScore").textContent = netScore.toFixed(1) + " / 22.5";
+  el("resScoreSub").textContent = "(+" + (correct * 1.5).toFixed(1) + " gained, \u2212" + (wrong * 0.4).toFixed(1) + " penalty)";
+  el("resTier").textContent = tier;
+  el("resultCodePreview").textContent = buildResultCode(rec);
+
+  el("kpiCorrect").textContent = String(correct);
+  el("kpiWrong").textContent = String(wrong);
+  el("kpiSkipped").textContent = String(skipped);
+  el("kpiAccuracy").textContent = accuracy + "%";
+
+  const tbody = el("chapterBreakdownBody");
+  tbody.innerHTML = "";
+  Object.entries(chStats)
+    .sort((a, b) => a[1].num - b[1].num)
+    .forEach(([label, st]) => {
+      const tr = document.createElement("tr");
+      tr.innerHTML =
+        "<td><strong>" + label + "</strong></td>" +
+        '<td class="num">' + st.total + "</td>" +
+        '<td class="num" style="color:var(--ok);font-weight:700;">' + st.correct + "</td>" +
+        '<td class="num" style="color:var(--err);font-weight:700;">' + st.wrong + "</td>" +
+        '<td class="num" style="color:var(--muted);">' + st.skipped + "</td>";
+      tbody.appendChild(tr);
+    });
+
+  const tabs = el("filterTabs").querySelectorAll(".tab-btn");
+  tabs[0].textContent = "All (" + QUESTIONS.length + ")";
+  tabs[1].textContent = "Wrong (" + wrong + ")";
+  tabs[2].textContent = "Correct (" + correct + ")";
+  tabs[3].textContent = "Skipped (" + skipped + ")";
+
+  renderResultLeaderboard();
+  renderReviewList();
+  syncToCloud(rec);
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+function renderReviewList() {
+  const container = el("reviewContainer");
+  container.innerHTML = "";
+
+  const filtered = QUESTIONS.filter((q) => {
+    const picked = state.answers[q.q_num] || null;
+    if (state.filter === "correct") return picked === q.correct;
+    if (state.filter === "wrong") return picked !== null && picked !== q.correct;
+    if (state.filter === "skipped") return picked === null;
+    return true;
+  });
+
+  if (filtered.length === 0) {
+    container.innerHTML = '<div class="card-box" style="text-align:center;color:var(--muted);">No questions in this category.</div>';
+    return;
+  }
+
+  filtered.forEach((q) => {
+    const picked = state.answers[q.q_num] || null;
+    const status = !picked ? "skipped" : (picked === q.correct ? "correct" : "wrong");
+    const statusLabel = status === "correct" ? "Correct (+1.5)" : (status === "wrong" ? "Wrong (\u22120.4)" : "Skipped (0)");
+    const pillCls = status === "correct" ? "pill-ok" : (status === "wrong" ? "pill-err" : "pill-skip");
+
+    let optsHtml = "";
+    ["A", "B", "C", "D", "E"].forEach((ltr) => {
+      const isCorr = ltr === q.correct;
+      const isUser = ltr === picked;
+      let cls = "rev-opt";
+      let tag = "";
+      if (isCorr) {
+        cls += " is-correct";
+        tag = isUser ? '<span class="rev-tag" style="background:#a7f3d0;color:#065f46;">Your Answer \u2713</span>'
+                     : '<span class="rev-tag" style="background:#a7f3d0;color:#065f46;">Correct Answer</span>';
+      } else if (isUser) {
+        cls += " is-wrong";
+        tag = '<span class="rev-tag" style="background:#fecaca;color:#991b1b;">Your Answer \u2717</span>';
+      }
+      optsHtml += '<li class="' + cls + '"><strong>' + ltr + '.</strong><span>' + q.options[ltr] + '</span>' + tag + '</li>';
+    });
+
+    const card = document.createElement("div");
+    card.className = "rev-card status-" + status;
+    card.innerHTML =
+      '<div class="rev-head">' +
+        '<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">' +
+          '<span class="q-badge">Q' + q.q_num + '</span>' +
+          '<span class="status-pill ' + pillCls + '">' + statusLabel + '</span>' +
+        '</div>' +
+        '<span class="rev-meta">Ch ' + q.chapter_num + ': ' + q.chapter_name + ' &middot; ' + q.difficulty + '</span>' +
+      '</div>' +
+      '<div class="q-stem" style="margin-bottom:8px;">' + q.stem_html + '</div>' +
+      '<ul class="rev-opts">' + optsHtml + '</ul>' +
+      '<div class="sol-box"><strong>Step-by-Step Solution:</strong> ' + q.solution_html + '</div>' +
+      '<div class="trap-box"><strong>IMAT Trap:</strong> ' + q.imat_trap + '</div>';
+    container.appendChild(card);
+  });
+}
+
+function parseBulkCodes(text) {
+  const regex = /IMATRES\|([^|\r\n]+)\|([^|\r\n]+)\|([^|\r\n]+)\|(-?\d+(?:\.\d+)?)\|(\d+)\|(\d+)\|(\d+)\|(\d+)\|(\d{1,2}:\d{2})/g;
+  const imported = [];
+  let m;
+  while ((m = regex.exec(text)) !== null) {
+    imported.push({
+      timestamp: "Imported",
+      set: m[1].trim(),
+      name: m[2].trim(),
+      roll: m[3].trim(),
+      score: Number(m[4]),
+      correct: Number(m[5]),
+      wrong: Number(m[6]),
+      skipped: Number(m[7]),
+      accuracy: Number(m[8]),
+      time: m[9].trim()
+    });
+  }
+  return imported;
+}
+
+function exportAttemptsCsv() {
+  const sorted = sortLeaderboard(state.attempts);
+  if (sorted.length === 0) {
+    showToast("No attempts to export yet.");
+    return;
+  }
+  const header = ["Rank", "Set", "Name", "Roll_No", "Score_Out_Of_22.5", "Correct", "Wrong", "Skipped", "Accuracy_Pct", "Time_Taken", "Submitted_At"];
+  const rows = [header.join(",")];
+  sorted.forEach((r, idx) => {
+    const vals = [idx + 1, SET_PAD, r.name, r.roll, Number(r.score).toFixed(1), r.correct, r.wrong, r.skipped, r.accuracy, r.time, r.timestamp || ""];
+    rows.push(vals.map((v) => '"' + String(v).replace(/"/g, '""') + '"').join(","));
+  });
+  const blob = new Blob([rows.join("\n")], { type: "text/csv;charset=utf-8;" });
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = "IMAT_Mock_Test_" + SET_PAD + "_Attempts_Top10.csv";
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  showToast("CSV downloaded (" + sorted.length + " attempts).");
+}
+
+// Init
+state.attempts = loadLocalAttempts();
+fetchCloudLeaderboard();
+
+// Event Listeners
+el("openLeaderboardBtn").addEventListener("click", () => {
+  if (!el("startScreen").classList.contains("hidden")) state.previousScreen = "startScreen";
+  else if (!el("resultScreen").classList.contains("hidden")) state.previousScreen = "resultScreen";
+  el("startScreen").classList.add("hidden");
+  el("resultScreen").classList.add("hidden");
+  el("trackerScreen").classList.remove("hidden");
+  renderTrackerScreen();
+  fetchCloudLeaderboard();
+});
+
+el("backFromTrackerBtn").addEventListener("click", () => {
+  el("trackerScreen").classList.add("hidden");
+  el(state.previousScreen).classList.remove("hidden");
+  if (state.previousScreen === "resultScreen") renderResultLeaderboard();
+});
+
+el("startForm").addEventListener("submit", (e) => {
+  e.preventDefault();
+  const name = el("studentName").value.trim();
+  const roll = el("studentRoll").value.trim();
+  if (!name || !roll) {
+    el("formError").classList.remove("hidden");
+    return;
+  }
+  el("formError").classList.add("hidden");
+  state.studentName = name;
+  state.studentRoll = roll;
+  state.currentIdx = 0;
+  state.answers = {};
+  state.review = {};
+  state.secondsLeft = TOTAL_SECONDS;
+  state.submitted = false;
+  state.filter = "all";
+
+  el("studentDisplay").textContent = name + " (" + roll + ")";
+  el("startScreen").classList.add("hidden");
+  el("resultScreen").classList.add("hidden");
+  el("trackerScreen").classList.add("hidden");
+  el("openLeaderboardBtn").classList.add("hidden");
+  el("examHeaderRight").classList.remove("hidden");
+  el("examScreen").classList.remove("hidden");
+
+  renderQuestion();
+  renderPalette();
+  startTimer();
+});
+
+el("clearBtn").addEventListener("click", () => {
+  const q = QUESTIONS[state.currentIdx];
+  delete state.answers[q.q_num];
+  renderQuestion();
+  renderPalette();
+});
+
+el("reviewBtn").addEventListener("click", () => {
+  const q = QUESTIONS[state.currentIdx];
+  state.review[q.q_num] = !state.review[q.q_num];
+  renderQuestion();
+  renderPalette();
+});
+
+el("prevBtn").addEventListener("click", () => {
+  if (state.currentIdx > 0) {
+    state.currentIdx--;
+    renderQuestion();
+    renderPalette();
+  }
+});
+
+el("nextBtn").addEventListener("click", () => {
+  if (state.currentIdx < QUESTIONS.length - 1) {
+    state.currentIdx++;
+    renderQuestion();
+    renderPalette();
+  } else {
+    openSubmitModal();
+  }
+});
+
+el("topSubmitBtn").addEventListener("click", openSubmitModal);
+el("sideSubmitBtn").addEventListener("click", openSubmitModal);
+el("cancelSubmitBtn").addEventListener("click", closeSubmitModal);
+el("confirmSubmitBtn").addEventListener("click", finalizeTest);
+
+el("copyResultBtn").addEventListener("click", () => {
+  if (!state.lastResultRecord) return;
+  const r = state.lastResultRecord;
+  const msg =
+    "IMAT Chemistry Mock Test " + SET_PAD + " Result\n" +
+    "Name: " + r.name + " | Roll: " + r.roll + "\n" +
+    "Score: " + Number(r.score).toFixed(1) + "/22.5 (C:" + r.correct + ", W:" + r.wrong + ", S:" + r.skipped + ", Acc:" + r.accuracy + "%, Time:" + r.time + ")\n" +
+    buildResultCode(r);
+  copyTextSafe(msg, "Result copied! Paste it in your teacher's WhatsApp/Telegram group.");
+});
+
+el("importCodesBtn").addEventListener("click", () => {
+  const raw = el("bulkImportInput").value;
+  const found = parseBulkCodes(raw);
+  if (found.length === 0) {
+    showToast("No valid IMATRES|... result codes found in pasted text.");
+    return;
+  }
+  state.attempts = mergeAttempts(state.attempts, found);
+  saveLocalAttempts(state.attempts);
+  el("bulkImportInput").value = "";
+  renderTrackerScreen();
+  showToast("Imported " + found.length + " student result(s) & updated Top-10!");
+});
+
+el("csvFileInput").addEventListener("change", (e) => {
+  const file = e.target.files && e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = () => {
+    const lines = String(reader.result || "").split(/\r?\n/).filter((l) => l.trim());
+    const parsed = [];
+    for (let i = 1; i < lines.length; i++) {
+      const cols = lines[i].split(",").map((c) => c.replace(/^"|"$/g, "").trim());
+      if (cols.length >= 10 && cols[2] && cols[3]) {
+        parsed.push({
+          set: cols[1] || SET_PAD,
+          name: cols[2],
+          roll: cols[3],
+          score: Number(cols[4]) || 0,
+          correct: Number(cols[5]) || 0,
+          wrong: Number(cols[6]) || 0,
+          skipped: Number(cols[7]) || 0,
+          accuracy: Number(cols[8]) || 0,
+          time: cols[9] || "25:00",
+          timestamp: cols[10] || "CSV Import"
+        });
+      }
+    }
+    if (parsed.length > 0) {
+      state.attempts = mergeAttempts(state.attempts, parsed);
+      saveLocalAttempts(state.attempts);
+      renderTrackerScreen();
+      showToast("Imported " + parsed.length + " row(s) from CSV!");
+    } else {
+      showToast("Could not find valid attempt rows in CSV.");
+    }
+  };
+  reader.readAsText(file);
+  e.target.value = "";
+});
+
+el("exportCsvBtn").addEventListener("click", exportAttemptsCsv);
+
+el("clearAttemptsBtn").addEventListener("click", () => {
+  el("clearModal").classList.remove("hidden");
+});
+el("cancelClearBtn").addEventListener("click", () => {
+  el("clearModal").classList.add("hidden");
+});
+el("confirmClearBtn").addEventListener("click", () => {
+  state.attempts = [];
+  saveLocalAttempts([]);
+  el("clearModal").classList.add("hidden");
+  renderTrackerScreen();
+  showToast("Local attempt records cleared.");
+});
+
+el("saveWebhookBtn").addEventListener("click", () => {
+  const url = el("webhookInput").value.trim();
+  if (url && !url.startsWith("https://")) {
+    showToast("Please enter a valid https:// Google Apps Script URL.");
+    return;
+  }
+  try {
+    localStorage.setItem(WEBHOOK_STORAGE_KEY, url);
+  } catch (err) {
+    // ignore
+  }
+  if (url) {
+    showToast("Cloud URL saved! Fetching live attempts...");
+    fetchCloudLeaderboard();
+  } else {
+    showToast("Cloud URL cleared (using local/import mode).");
+  }
+});
+
+el("copyScriptBtn").addEventListener("click", () => {
+  copyTextSafe(el("appsScriptCode").textContent, "Google Apps Script code copied!");
+});
+
+el("filterTabs").addEventListener("click", (e) => {
+  const btn = e.target.closest(".tab-btn");
+  if (!btn) return;
+  el("filterTabs").querySelectorAll(".tab-btn").forEach((b) => b.classList.remove("active"));
+  btn.classList.add("active");
+  state.filter = btn.getAttribute("data-filter");
+  renderReviewList();
+});
+
+el("printBtn").addEventListener("click", () => window.print());
+
+el("retakeBtn").addEventListener("click", () => {
+  el("resultScreen").classList.add("hidden");
+  el("startScreen").classList.remove("hidden");
+  el("studentName").value = state.studentName;
+  el("studentRoll").value = state.studentRoll;
+});
+</script>
+</body>
+</html>
